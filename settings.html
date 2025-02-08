@@ -1,0 +1,55 @@
+<!-- settings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .settings-container {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #212121;
+      color: #ccc;
+      border-radius: 4px;
+    }
+    .settings-container label {
+        font-family: 'Roboto', sans-serif;
+        margin-bottom: 5px;
+    }
+    .settings-container input {
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #444;
+      border-radius: 2px;
+      background: #181818;
+      color: #ccc;
+    }
+    .settings-container button {
+      padding: 8px;
+      border: none;
+      background: linear-gradient(70deg, #4629F2, #b94dfb);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .settings-container p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #7f7f7f;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <label for="apiKeyInput">OpenAI API Key:</label>
+    <input type="text" id="apiKeyInput" placeholder="Enter your API Key">
+    <button id="saveApiKey">Save API Key</button>
+    <p id="status"></p>
+  </div>
+  <script src="settings.js"></script>
+</body>
+</html>
