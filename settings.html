@@ -1,6 +1,7 @@
 <!-- settings.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Settings</title>
@@ -16,10 +17,12 @@
       color: #ccc;
       border-radius: 4px;
     }
+
     .settings-container label {
-        font-family: 'Roboto', sans-serif;
-        margin-bottom: 5px;
+      font-family: 'Roboto', sans-serif;
+      margin-bottom: 5px;
     }
+
     .settings-container input {
       padding: 8px;
       margin-bottom: 10px;
@@ -28,6 +31,7 @@
       background: #181818;
       color: #ccc;
     }
+
     .settings-container button {
       padding: 8px;
       border: none;
@@ -36,6 +40,7 @@
       cursor: pointer;
       border-radius: 2px;
     }
+
     .settings-container p {
       margin-top: 10px;
       font-size: 14px;
@@ -43,13 +48,22 @@
     }
   </style>
 </head>
+
 <body>
   <div class="settings-container">
-    <label for="apiKeyInput">OpenAI API Key:</label>
-    <input type="text" id="apiKeyInput" placeholder="Enter your API Key">
-    <button id="saveApiKey">Save API Key</button>
-    <p id="status"></p>
+    <h2>API Key Configuration</h2>
+    <p>The OpenAI API key is now configured via the <code>.env</code> file in the project root directory.</p>
+    <p>To set your API key:</p>
+    <ol>
+      <li>Create or edit the <code>.env</code> file in the project root</li>
+      <li>Add the following line: <code>VITE_OPENAI_API_KEY=your_actual_openai_key</code></li>
+      <li>Replace <code>your_actual_openai_key</code> with your OpenAI API key</li>
+      <li>Restart the extension or rebuild the project</li>
+    </ol>
+    <p><strong>Note:</strong> Make sure to add <code>.env</code> to your <code>.gitignore</code> file to prevent
+      committing your API key to version control.</p>
   </div>
   <script src="settings.js"></script>
 </body>
+
 </html>

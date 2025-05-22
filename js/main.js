@@ -19,47 +19,47 @@ function init() {
   }
 }
 
-  // --- Custom Context Menu Logic ---
-  // Disable the default context menu
-  window.oncontextmenu = function(e) {
-    e.preventDefault();
-    const menu = document.getElementById("custom-context-menu");
-    menu.style.top = e.pageY + "px";
-    menu.style.left = e.pageX + "px";
-    menu.style.display = "block";
-    return false;
-  };
+// --- Custom Context Menu Logic ---
+// Disable the default context menu
+window.oncontextmenu = function (e) {
+  e.preventDefault();
+  const menu = document.getElementById("custom-context-menu");
+  menu.style.top = e.pageY + "px";
+  menu.style.left = e.pageX + "px";
+  menu.style.display = "block";
+  return false;
+};
 
-  // Hide the custom context menu on any left-click
-  document.addEventListener("click", function() {
-    const menu = document.getElementById("custom-context-menu");
-    menu.style.display = "none";
+// Hide the custom context menu on any left-click
+document.addEventListener("click", function () {
+  const menu = document.getElementById("custom-context-menu");
+  menu.style.display = "none";
+});
+
+// Open settings modal when "Settings" is clicked in the custom context menu
+const contextSettings = document.getElementById("context-settings");
+if (contextSettings) {
+  contextSettings.addEventListener("click", function (e) {
+    e.stopPropagation();
+    document.getElementById("settingsModal").style.display = "block";
   });
+}
 
-  // Open settings modal when "Settings" is clicked in the custom context menu
-  const contextSettings = document.getElementById("context-settings");
-  if (contextSettings) {
-    contextSettings.addEventListener("click", function(e) {
-      e.stopPropagation();
-      document.getElementById("settingsModal").style.display = "block";
-    });
-  }
-
-  // Close the settings modal when the close button is clicked
-  const closeModal = document.getElementById("closeModal");
-  if (closeModal) {
-    closeModal.addEventListener("click", function() {
-      document.getElementById("settingsModal").style.display = "none";
-    });
-  }
-
-  // Optionally, close the modal when clicking outside of modal-content
-  window.addEventListener("click", function(event) {
-    const modal = document.getElementById("settingsModal");
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
+// Close the settings modal when the close button is clicked
+const closeModal = document.getElementById("closeModal");
+if (closeModal) {
+  closeModal.addEventListener("click", function () {
+    document.getElementById("settingsModal").style.display = "none";
   });
+}
+
+// Optionally, close the modal when clicking outside of modal-content
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("settingsModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
 
 function sendMessage() {
   const userInputField = document.querySelector("#user-input");
@@ -86,14 +86,15 @@ function chatCompletion(userInput, messageThread) {
   codeContainer.classList.add('loading-dots');
   codeContainer.innerHTML =
     '<div class="loading-dots-container">' +
-      '<div class="dot"></div>' +
-      '<div class="dot"></div>' +
-      '<div class="dot"></div>' +
+    '<div class="dot"></div>' +
+    '<div class="dot"></div>' +
+    '<div class="dot"></div>' +
     '</div>';
 
-  const apiKey = localStorage.getItem("openai_api_key") || "";
+  // Get API key from environment variable (set in .env file)
+  const apiKey = process.env.VITE_OPENAI_API_KEY;
   if (!apiKey) {
-    alert("Please set your OpenAI API key in the settings page.");
+    alert("OpenAI API Key not found. Ensure it is set in your .env file and the project is built.");
     codeContainer.classList.remove('loading-dots');
     codeContainer.innerHTML = "";
     return;
@@ -105,7 +106,7 @@ function chatCompletion(userInput, messageThread) {
       {
         role: "system",
         content:
-          "YOU ONLY RESPOND IN CODE. YOU ALWAYS PLACE TRIPLE BACKTICKS AROUND YOUR ENTIRE MESSAGE AND COMMENT OUT NON-CODE. You are an After Effects Scripting assistant whose job is to strictly respond with code that can be executed as a script to accomplish whatever the user requests. If the user tells you to create or modify something in After Effects then you should provide a script that achieves what the user requested. For example, if the user asked you to say hello world, you would respond with code that alerts hello world. You do not provide pseudocode ever.",
+          "YOU ONLY RESPOND IN CODE. YOU ALWAYS PLACE TRIPLE BACKTICKS AROUND YOUR ENTIRE MESSAGE AND COMMENT OUT NON-CODE. You are an After Effects Scripting assistant whose job is to strictly respond with code that can be executed as a script to accomplish whatever the user requests. If the user tells you to create or modify something in After Effects then you should provide a script that achieves what the user requested. For example, if the user asked you to say hello world, you would respond with code that alerts hello world. You do not provide pseudocode ever. CRUCIALLY, you MUST wrap the core logic of your script within `safeUndo('AI Action', function() { /* your code here */ });` to ensure the user can undo the operation.",
       },
       {
         role: "user",
@@ -194,7 +195,22 @@ function executeScript(code) {
   // alert(code); // This is correct for debugging
   const csInterface = new CSInterface();
   csInterface.evalScript(code, function (result) {
-    console.log("Execution Result: ", result);
+    try {
+      // Parse the JSON result from the JSX side
+      const jsonResult = JSON.parse(result);
+
+      if (jsonResult.error) {
+        // Display error details
+        console.error("Script Error:", jsonResult);
+        alert(`Error executing script: ${jsonResult.message}\nLine: ${jsonResult.line}`);
+      } else {
+        // Log success
+        console.log("Execution Result:", jsonResult.result);
+      }
+    } catch (e) {
+      // Handle case where result isn't valid JSON
+      console.log("Execution Result (raw):", result);
+    }
   });
 }
 
@@ -207,128 +223,73 @@ function createRunButton(code, container, userInput) {
   });
   container.appendChild(runButton);
   //const debugButton = document.createElement("button");
- // debugButton.innerText = "Debug";
+  // debugButton.innerText = "Debug";
   //debugButton.className = "debug-button";
   //debugButton.addEventListener("click", function () {
-    //sendDebugMessage(userInput, code);
+  //sendDebugMessage(userInput, code);
   //});
   //container.appendChild(debugButton);
 }
 
-function getNextFilename(directory) {
-  const fs = require("fs");
-  const path = require("path");
-  let i = 1;
-  while (true) {
-    let filename = String(i).padStart(4, "0") + ".jsx";
-    let filepath = path.join(directory, filename);
-    if (!fs.existsSync(filepath)) {
-      // alert(filename);
-      return filename;
-    }
-    i++;
-  }
-}
-
-// Replace your existing createSaveButton function with this version:
 function createSaveButton(code, container) {
   const saveButton = document.createElement("button");
   saveButton.innerText = "Save";
   saveButton.className = "save-button";
   saveButton.addEventListener("click", function () {
-    addScriptToKBar(code);
-  });
-  container.appendChild(saveButton);
-}
+    // Show saving indicator
+    const originalText = saveButton.innerText;
+    saveButton.innerText = "Saving...";
+    saveButton.disabled = true;
 
-function addScriptToKBar(code) {
-  const fs = require("fs");
-  const path = require("path");
-
-  // 1. Save the generated script to a file
-  const scriptsDirectory = path.join(__dirname, "script-gens");
-  if (!fs.existsSync(scriptsDirectory)) {
-    fs.mkdirSync(scriptsDirectory);
-  }
-  const filename = getNextFilename(scriptsDirectory);
-  const scriptFilePath = path.join(scriptsDirectory, filename);
-
-  fs.writeFile(scriptFilePath, code, (err) => {
-    if (err) {
-      console.error("Error writing script file:", err);
-      return;
-    }
-    console.log(`${filename} has been saved.`);
-
-    // 2. Update the kbar JSON file to add a new button that points to the script
-    const kbarJsonPath = "C:\\Users\\jorda\\AppData\\Roaming\\aescripts\\kbar\\toolbars.json";
-    fs.readFile(kbarJsonPath, "utf-8", (readErr, data) => {
-      if (readErr) {
-        console.error("Error reading kbar JSON file:", readErr);
-        return;
-      }
-
-      let kbarJson;
+    // Call the JSX function to save the file
+    const csInterface = new CSInterface();
+    csInterface.evalScript(`saveScriptToFile(${JSON.stringify(code)})`, function (result) {
       try {
-        kbarJson = JSON.parse(data);
-      } catch (parseErr) {
-        console.error("Error parsing kbar JSON file:", parseErr);
-        return;
-      }
+        const jsonResult = JSON.parse(result);
 
-      // Find the toolbar to add the button to (e.g., "Layer")
-      let targetToolbar = kbarJson.toolbars.find(toolbar => toolbar.name === "Layer");
-      if (!targetToolbar) {
-        // Create a new toolbar if it doesn't exist
-        targetToolbar = { name: "Layer", buttons: [] };
-        kbarJson.toolbars.push(targetToolbar);
-      }
+        if (jsonResult.success) {
+          // Show success message
+          saveButton.innerText = "Saved!";
+          console.log("Script saved to:", jsonResult.path);
 
-      // Create a new button object for the generated script
-      const newButton = {
-        type: 1, // Script type button
-        name: "Generated Script",
-        description: "",
-        icon: {
-          type: 1,         // Use an icon type of 1 (adjust if needed)
-          path: "code",    // Default icon name (change as desired)
-          color: ""
-        },
-        modifiers: {
-          ctrl: null,
-          alt: null,
-          shift: null,
-          altshift: null,
-          ctrlalt: null,
-          ctrlshift: null,
-          ctrlaltshift: null
-        },
-        filePath: scriptFilePath,
-        argument: "",
-        id: generateUUID() // Generate a unique id
-      };
+          // Create a status message in the UI
+          const statusMsg = document.createElement("div");
+          statusMsg.className = "save-status success";
+          statusMsg.textContent = `Saved to: ${jsonResult.path}`;
+          container.appendChild(statusMsg);
 
-      // Add the new button to the toolbar's buttons array
-      targetToolbar.buttons.push(newButton);
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            saveButton.innerText = originalText;
+            saveButton.disabled = false;
+          }, 2000);
+        } else {
+          // Show error
+          saveButton.innerText = "Error!";
+          console.error("Error saving script:", jsonResult.error);
+          alert("Error saving script: " + jsonResult.error);
 
-      // Write the updated JSON back to the kbar file
-      fs.writeFile(kbarJsonPath, JSON.stringify(kbarJson, null, 3), (writeErr) => {
-        if (writeErr) {
-          console.error("Error writing kbar JSON file:", writeErr);
-          return;
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            saveButton.innerText = originalText;
+            saveButton.disabled = false;
+          }, 2000);
         }
-        console.log("Script added to kbar successfully.");
-      });
+      } catch (e) {
+        // Handle parsing error
+        saveButton.innerText = "Error!";
+        console.error("Error parsing save result:", e, result);
+        alert("Error saving script. See console for details.");
+
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          saveButton.innerText = originalText;
+          saveButton.disabled = false;
+        }, 2000);
+      }
     });
   });
-}
-
-// Utility function to generate a UUID for the new button id
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
+  container.appendChild(saveButton);
 }
 
 

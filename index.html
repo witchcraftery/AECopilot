@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <!-- Include other necessary CSS and JS files -->
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="css/pcStyles.css" />
   <title>AECopilot</title>
 </head>
+
 <body scroll="no">
   <div id="container">
     <div class="thread-container">
@@ -19,22 +21,23 @@
       </div>
     </div>
   </div>
-    <!-- Custom Context Menu (placed at the end of the body) -->
-    <div id="custom-context-menu" class="custom-context-menu">
-      <div id="context-settings" class="custom-context-menu-item">Settings</div>
+  <!-- Custom Context Menu (placed at the end of the body) -->
+  <div id="custom-context-menu" class="custom-context-menu">
+    <div id="context-settings" class="custom-context-menu-item">Settings</div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <iframe id="settingsFrame" src="settings.html"></iframe>
     </div>
-  
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
-      <div class="modal-content">
-        <span id="closeModal" class="close">&times;</span>
-        <iframe id="settingsFrame" src="settings.html"></iframe>
-      </div>
-    </div>
+  </div>
 
   <!-- Your existing scripts -->
   <script src="js/libs/CSInterface.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/dist/main.js"></script>
   <!-- Additional JavaScript -->
 </body>
+
 </html>

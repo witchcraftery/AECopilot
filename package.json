@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "watch": "parcel watch js/main.js --dist-dir js/dist/",
+    "build": "parcel build js/main.js --dist-dir js/dist/"
   },
   "devDependencies": {
-    "vite": "^5.0.8"
+    "parcel": "^2.9.3",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",

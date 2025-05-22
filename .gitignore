@@ -1,0 +1,50 @@
+# Environment variables
+.env
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build files
+dist/
+build/
+
+# Parcel cache
+.parcel-cache/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+_archived-plans/REFINEMENT-IMPLEMENTATION-PLAN.md
+_archived-plans/REFINEMENT-PROGRESS-CONTD.md
+_archived-plans/REFINEMENT-PROGRESS-v1.md
+_archived-plans/REFINEMENT-PROGRESS.md
+.roo/mcp.json
+fonts/Roboto/Roboto-Black.ttf
+fonts/Roboto/Roboto-BlackItalic.ttf
+fonts/Roboto/Roboto-Bold.ttf
+fonts/Roboto/Roboto-BoldItalic.ttf
+fonts/Roboto/Roboto-Italic.ttf
+fonts/Roboto/Roboto-Light.ttf
+fonts/Roboto/Roboto-LightItalic.ttf
+fonts/Roboto/Roboto-Medium.ttf
+fonts/Roboto/Roboto-MediumItalic.ttf
+fonts/Roboto/Roboto-Regular.ttf
+fonts/Roboto/Roboto-Thin.ttf
+fonts/Roboto/Roboto-ThinItalic.ttf
+fonts/Roboto/LICENSE.txt
